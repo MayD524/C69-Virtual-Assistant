@@ -1,0 +1,11 @@
+{
+    "action_phrases" : [
+        "open",
+        "can",
+        "what",
+        "when",
+        "how",
+        "where"
+    ],
+    "useGui": false
+}
