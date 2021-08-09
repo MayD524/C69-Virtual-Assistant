@@ -1,2 +1,2 @@
-# C69-Virtual-Assistant-
+# C69-Virtual-Assistant
 A virtual assistant cause yes
