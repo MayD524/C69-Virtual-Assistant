@@ -20,22 +20,33 @@ class parser:
             Where - Where is <question>
             Run plugin - for later
         """ 
+        
+        if "can" in self.action_phrases:
+            self.action_phrases.remove("can")
+        
         if "can" in commandPhrase:
             if any(item in commandPhrase for item in self.action_phrases):
                 cmd = commandPhrase[2] if commandPhrase[2] in self.action_phrases else None
                 
             else:
+                print(string[len(string) // 2])
                 cmd = string[len(string) // 2] if string[len(string) // 2] in self.action_phrases else None
                 
             if cmd == None:
                 print(chr(69)) #Fear the chr(69). It's not an us problem it's a you problem
                 raise Exception("Some Vodo magic happened")
-
-            command_list.append("can")
+            
             command_list.append(cmd)
             command_list.append(string[-1]) 
         
         else:
+            ## return early
+            searchPhrases = ["when", "what", "how", "where"]
+            if not any(item in string for item in searchPhrases):
+                command_list.append(string[0])
+                command_list.append(' '.join(string[1:]))
+                return command_list
+            
             if any(item in string for item in self.action_phrases):
                 cmd = string[:2]
             else:

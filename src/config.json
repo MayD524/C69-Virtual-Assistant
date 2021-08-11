@@ -1,11 +1,21 @@
 {
+    "text_to_speech": {
+        "gender" : 0,
+        "volume" : 0.50,
+        "rate" : 20
+    },
+    "plugins" : {
+        "filemgr" : {
+            "version": "0.0.1",
+            "description" : "dfm gkmfglkhmdrfhg",
+            "location" : "plugins"
+        }
+    },
     "action_phrases" : [
         "open",
-        "can",
         "what",
         "when",
         "how",
         "where"
-    ],
-    "useGui": false
+    ]
 }
