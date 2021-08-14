@@ -1,5 +1,6 @@
 from voiceEngine import c69_voiceEngine
-import parser
+import speech_recognition
+import c69va_parser
 import UPL
 import sys
 import os
@@ -10,8 +11,9 @@ class C69_VA:
         self.funcs = {}
         self.boot()
         self.voice = c69_voiceEngine(self.config)
-        self.parser = parser.parser(config["action_phrases"])
+        self.parser = c69va_parser.parser(config["action_phrases"])
         self.userActions = config["action_phrases"]
+        self.listener = speech_recognition.Recognizer()
     
     def run_userInput(self, userInput:str) -> None:
         userInp = self.parser.parse(userInput)
@@ -19,7 +21,7 @@ class C69_VA:
 
         if userInp[0] not in self.userActions:
             print(chr(69))
-            raise Exception("There was an issue, unknown command")
+            self.voice.say("There was an issue, unknown command")
         
         opt = UPL.Core.switch(self.funcs, userInp[0])
         
@@ -27,10 +29,13 @@ class C69_VA:
             funcOut = opt(userInp)
 
             if type(funcOut) == tuple:
-                pass
+                if funcOut[0] in self.voice.voice_actions.keys():
+                    opt = UPL.Core.switch(self.voice.voice_actions, funcOut[0])
+                    opt(funcOut[1])
             
         except Exception as e:
             print(chr(69))
+            print(type(e))
             print(e)
         
     def boot(self) -> None:
@@ -39,7 +44,8 @@ class C69_VA:
         
         for plugin in self.config["plugins"].keys():
             dt = self.config["plugins"][plugin]
-            
+            if dt["enabled"] == False:
+                continue
             ## fancy printing
             print(f"Loading {plugin.capitalize()} version {dt['version']}...")
             print(f"[{plugin}] -> Location: {dt['location']}")
@@ -50,17 +56,33 @@ class C69_VA:
             py_script = __import__(plugin)
             
             ## run the plugin
-            plugin_data = py_script.plugin_Main()
+            plugin_data = py_script.plugin_Main(self.config)
             cmds = list(plugin_data.keys())
             
             ## append the useful stuff
             self.config["action_phrases"] += cmds
             self.funcs.update(plugin_data)
             
-            
-            
-            
+    def voiceInput(self) -> str:
+        try:
+            with speech_recognition.Microphone() as source:
+                print('listening...')
+                voice = self.listener.listen(source)
+                command = self.listener.recognize_google(voice)
+                command = command.lower()
+                if self.config['va_name'] in command:
+                    command = command.replace(self.config['va_name'], "")
+                    print(command)
+                    return command
+                    
+        except Exception as e:
+            print(e)
+            pass
+        
+      
     def main(self) -> None:
+        #cmd = self.voiceInput()
+        #print(cmd)
         ## main loop
         while True:
             userInput = UPL.Core.ainput("> ", str)
@@ -70,6 +92,7 @@ class C69_VA:
 ## !! SCRIPT START !! ##
 if __name__ == "__main__":
     config = UPL.Core.file_manager.getData_json(f"{os.getcwd()}\config.json")
+    print(f"Welcome to your virtual assistant!\nMy names {config['va_name']}!")
     VA = C69_VA(config)
     VA.main()
     

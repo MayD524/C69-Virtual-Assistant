@@ -1,16 +1,38 @@
 {
+    "va_name" : "may",
+
+    "permissions" : {
+
+    },
+
     "text_to_speech": {
         "gender" : 0,
-        "volume" : 0.50,
+        "volume" : 0.75,
         "rate" : 20
     },
+
+    "search_options" : {
+        "lang"  : "en",
+        "num"   : 10,
+        "stop"  : 10,
+        "pause" : 2
+    },
+
     "plugins" : {
         "filemgr" : {
-            "version": "0.0.1",
-            "description" : "dfm gkmfglkhmdrfhg",
-            "location" : "plugins"
+            "version": "0.0.2",
+            "description" : "Managing files (open/reading)",
+            "location" : "plugins",
+            "enabled" : true
+        },
+        "query_plugin" : {
+            "version" : "0.0.1",
+            "description" : "Run searches on the web and on your system",
+            "location" : "plugins",
+            "enabled" : true
         }
     },
+
     "action_phrases" : [
         "open",
         "what",

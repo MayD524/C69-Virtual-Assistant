@@ -8,6 +8,7 @@ class parser:
 
         command_list = []
         string = string.lower()
+        perm   = string
         string = string.rsplit("?",1)[0]
         string = string.split(" ") #Sweden idea works all the time i guess?
         commandPhrase = string[:len(string) // 2]
@@ -38,6 +39,7 @@ class parser:
             
             command_list.append(cmd)
             command_list.append(string[-1]) 
+            command_list.append(perm)
         
         else:
             ## return early
@@ -45,6 +47,7 @@ class parser:
             if not any(item in string for item in searchPhrases):
                 command_list.append(string[0])
                 command_list.append(' '.join(string[1:]))
+                command_list.append(perm)
                 return command_list
             
             if any(item in string for item in self.action_phrases):
@@ -56,5 +59,6 @@ class parser:
             string = string[2:]
             command_list.append(cmd[0])
             command_list.append(' '.join(string))
+            command_list.append(perm)
 
         return command_list
